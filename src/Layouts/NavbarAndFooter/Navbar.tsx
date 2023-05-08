@@ -1,4 +1,4 @@
-import React from "react";
+import { useState} from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useOktaAuth } from "@okta/okta-react";
 import { SpinnerLoading } from "../Utils/SpinnerLoading";
@@ -6,10 +6,13 @@ import { SpinnerLoading } from "../Utils/SpinnerLoading";
 
 export const Navbar = () => {
   const { oktaAuth, authState } = useOktaAuth();
+  const [isSignOut, setIsSignOut] = useState(false);
   if (!authState) {
     <SpinnerLoading />
   }
-  const handleLogout = async () => oktaAuth.signOut();
+  const handleLogout = async () => {
+    oktaAuth.signOut();
+  };
   const alertMe = () => {
     alert('hi');
   }
@@ -50,7 +53,15 @@ export const Navbar = () => {
                 </li>
                 :
                 <li className='nav-item m-1'>
-                  <button type="button" className='btn btn-outline-danger' onClick={handleLogout}>Sign Out</button>
+                  {
+                    isSignOut?
+                      <button className="btn btn-outline-danger" type="button" disabled>
+                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Signin Out...
+                      </button>
+                      :
+                      <button type="button" className='btn btn-outline-danger' onClick={handleLogout}>Sign Out</button>
+                  }
                 </li>
             }
           </ul>
