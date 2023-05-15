@@ -24,13 +24,13 @@ export const Loans = () =>{
                         'Content-Type'  :   'application/json'
                     }
                 };
-                const shelfCurrentLoansResponse =  await fetch(url, requestOptions);
+                const shelfCurrentLoansResponse = await fetch(url, requestOptions);
                 if(!shelfCurrentLoansResponse.ok){
                     throw new Error('Something Went Wrong!');
                 }
-                const shelfCurrentLoansResponseResponseJSONs = await shelfCurrentLoansResponse.json();
+                const data = await shelfCurrentLoansResponse.json();
                 const shelfARRs : ShelfCurrentLoans[] = [];
-                shelfCurrentLoansResponseResponseJSONs.map((x:{
+                data.map((x:{
                     book:BookModel;
                     daysLeft:number;})=>{
                     shelfARRs.push({
@@ -38,11 +38,9 @@ export const Loans = () =>{
                         daysLeft:x.daysLeft,
                     });
                 });
-                setShelfCurrentLoans(shelfCurrentLoansResponseResponseJSONs);
-                setShelfCurrentLoans(shelfARRs);
-                console.log(shelfCurrentLoans);
+                setShelfCurrentLoans(data);
+                setIsLoadingUserLoans(false);
             }
-            setIsLoadingUserLoans(false);
         }
 
         fetchUserCurrentLoans().catch((error: any)=>{
@@ -51,6 +49,11 @@ export const Loans = () =>{
         });
         window.scrollTo(0,0);
     },[authState]);
+
+    useEffect(()=>{
+        console.log(`setShelfCurrentLoans`, shelfCurrentLoans);
+        setShelfCurrentLoans(shelfCurrentLoans);
+    },[shelfCurrentLoans]);
 
     if(isLoadingUserLoans){
         return(
@@ -76,16 +79,16 @@ export const Loans = () =>{
                     shelfCurrentLoans.length>0?
                         <>
                             <h5>
-                                Current Loans:
+                                Current Loans: {shelfCurrentLoans.length}
                             </h5>
                             {
-                                shelfCurrentLoans.map(shelfCurrentLoan=>{
-                                    <div key={shelfCurrentLoan.book.id}>
+                                    Array.from({ length: shelfCurrentLoans.length }, (_, i) => 
+                                    <div key={shelfCurrentLoans[i].book.id}>
                                         <div className="row mt-3 mb-3">
                                             <div className="col-4 col-md-4 container">
                                                 {
-                                                    shelfCurrentLoan.book?.img?
-                                                    <img src={shelfCurrentLoan.book?.img} width='226' height='349' alt='Book'/>
+                                                    shelfCurrentLoans[i].book?.img?
+                                                    <img src={shelfCurrentLoans[i].book?.img} width='226' height='349' alt='Book'/>
                                                     :
                                                     <img src={require('./../../../Images/BooksImages/book-luv2code-1000.png')} 
                                                         width='226' height='349' alt='Book'
@@ -97,26 +100,26 @@ export const Loans = () =>{
                                                     <div className="mt-3">
                                                         <h4>Loans Options</h4>
                                                         {
-                                                            shelfCurrentLoan.daysLeft > 0 &&
+                                                            shelfCurrentLoans[i].daysLeft > 0 &&
                                                             <p className="text-secondary">
-                                                                Due In {shelfCurrentLoan.daysLeft} Days.
+                                                                Due In {shelfCurrentLoans[i].daysLeft} Days.
                                                             </p>
                                                         }
                                                         {
-                                                            shelfCurrentLoan.daysLeft === 0 &&
+                                                            shelfCurrentLoans[i].daysLeft === 0 &&
                                                             <p className="text-success">
                                                                 Due Today.
                                                             </p>
                                                         }
                                                         {
-                                                            shelfCurrentLoan.daysLeft < 0 &&
+                                                            shelfCurrentLoans[i].daysLeft < 0 &&
                                                             <p className="text-danger">
-                                                                Past due by {shelfCurrentLoan.daysLeft} Days.
+                                                                Past due by {shelfCurrentLoans[i].daysLeft} Days.
                                                             </p>
                                                         }
                                                         <div className="list-group mt-3">
                                                             <button className="list-group-item list-group-item-action" aria-current='true' 
-                                                            data-bs-toggle='modal' data-bs-target={`#modal${shelfCurrentLoan.book.id}`}>
+                                                            data-bs-toggle='modal' data-bs-target={`#modal${shelfCurrentLoans[i].book.id}`}>
                                                                 Manage Loans
                                                             </button>
                                                             <Link to={'search'} className='list-group-item list-group-item-action'> 
@@ -128,16 +131,15 @@ export const Loans = () =>{
                                                     <p className="mt-3 ">
                                                         Help Other Find Their Adventure by Reviewing Your Loans
                                                     </p>
-                                                    <Link className="btn btn-primary" to={`/checkout/${shelfCurrentLoan.book.id}`}>
+                                                    <Link className="btn btn-primary" to={`/checkout/${shelfCurrentLoans[i].book.id}`}>
                                                         Leave A Review
                                                     </Link>
                                                 </div>
                                             </div>
                                         </div>
-                                        <hr />
-                                         
+                                        <hr />    
                                     </div>
-                                })
+                                    )
                             }
                         </>
                     :

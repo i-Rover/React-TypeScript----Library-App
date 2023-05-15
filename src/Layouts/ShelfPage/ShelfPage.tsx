@@ -1,6 +1,6 @@
 import { Loans } from "./components/Loans";
 
-export const ShelfPage = () => {
+export const ShelfPage:React.FC<{}> = () => {
     return(
         <div className="container">
             <div className="mt-3">
