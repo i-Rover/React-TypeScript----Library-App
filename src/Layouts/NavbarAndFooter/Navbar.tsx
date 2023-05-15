@@ -33,6 +33,11 @@ export const Navbar = () => {
             <li className="nav-item">
               <NavLink className="nav-link" to="/search">Search Books</NavLink>
             </li>
+            {authState?.isAuthenticated && 
+              <li className="nav-item">
+                <NavLink className='nav-link' to='/shelf'>Shelf</NavLink>
+              </li>
+            }
             <li className="nav-item dropdown">
               <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
