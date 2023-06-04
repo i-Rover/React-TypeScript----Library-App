@@ -38,6 +38,11 @@ export const Navbar = () => {
                 <NavLink className='nav-link' to='/shelf'>Shelf</NavLink>
               </li>
             }
+            {authState?.isAuthenticated && authState.accessToken?.claims?.userType === "admin" &&
+              <li className="nav-item">
+                  <NavLink className='nav-link' to='/admin'>Admin</NavLink>
+              </li>
+            }
             <li className="nav-item dropdown">
               <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">

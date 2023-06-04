@@ -6,8 +6,9 @@ export default class MessageModel{
     adminEmail?:string;
     response?:string;
     closed?:boolean;
-    constructor(title:string, question:string){
+    constructor(title:string, question:string, closed:boolean){
         this.title = title;
         this.question = question;
+        this.closed = closed;
     }
 }
